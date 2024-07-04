@@ -16,10 +16,7 @@
       <v-btn @click="sendData" v-if="items.length">Enviar Datos</v-btn>
     </div>
     <div v-if="loading">
-      <v-progress-linear
-      color="yellow-darken-2"
-      indeterminate
-    ></v-progress-linear>
+      <progress class="progress is-small is-primary" max="100">15%</progress>
     </div>
   </div>
 </template>
@@ -39,6 +36,10 @@ export default {
     };
   },
   methods: {
+    showAlert(mensaje) {
+      this.$swal(mensaje);
+    },
+
     async subirExcel(event) {
       const input = event.target;
       if (input.files.length === 0) return;
@@ -73,16 +74,16 @@ export default {
                   "/" +
                   cell.getFullYear().toString();
                 item[this.headers[index].value] = formattedDate;
-              }else{
+              } else {
                 item[this.headers[index].value] = cell;
               }
             }
           });
           return item;
         });
-
       } catch (error) {
         this.error = "Error al procesar el archivo: " + error.message;
+        this.showAlert(this.error);
       } finally {
         this.loading = false;
       }
@@ -96,16 +97,15 @@ export default {
           cleanData
         );
         if (response.status === 200) {
-          alert("Datos enviados exitosamente");
+          this.showAlert("Datos enviados exitosamente");
         } else {
           throw new Error(
             "Error en la respuesta del servidor: " + response.statusText
           );
         }
       } catch (error) {
-        console.error("Error completo:", error); // Mejora el manejo de errores
         this.error = "Error al enviar datos: " + error.message;
-        alert(this.error);
+        this.showAlert(this.error);
       }
     },
   },
@@ -145,12 +145,10 @@ input {
   border-radius: 4px;
 }
 
-
 input:focus {
-  border-color: #4CAF50;
+  border-color: #4caf50;
   outline: none;
 }
-
 
 .boton-Enviar {
   margin-top: 20px;

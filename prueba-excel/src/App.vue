@@ -36,8 +36,8 @@ export default {
     };
   },
   methods: {
-    showAlert(mensaje) {
-      this.$swal(mensaje);
+    showAlert(icon, mensaje) {
+      this.$swal({icon: icon , text : mensaje});
     },
 
     async subirExcel(event) {
@@ -50,7 +50,6 @@ export default {
       this.headers = [];
       this.ignore = ["Ignorar"];
 
-      console.log("entro");
       try {
         const rows = await readXlsxFile(input.files[0], { sheet: 1 });
 
@@ -83,7 +82,7 @@ export default {
         });
       } catch (error) {
         this.error = "Error al procesar el archivo: " + error.message;
-        this.showAlert(this.error);
+        this.showAlert("error" , this.error);
       } finally {
         this.loading = false;
       }
@@ -97,7 +96,7 @@ export default {
           cleanData
         );
         if (response.status === 200) {
-          this.showAlert("Datos enviados exitosamente");
+          this.showAlert("success" ,"Datos enviados exitosamente");
         } else {
           throw new Error(
             "Error en la respuesta del servidor: " + response.statusText
@@ -105,7 +104,7 @@ export default {
         }
       } catch (error) {
         this.error = "Error al enviar datos: " + error.message;
-        this.showAlert(this.error);
+        this.showAlert("error" ,this.error);
       }
     },
   },
